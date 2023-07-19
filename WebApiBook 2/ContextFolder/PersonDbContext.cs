@@ -1,14 +1,16 @@
 ﻿
 using Microsoft.AspNetCore.Identity;
-using System.Data.Entity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using WebApiBook_2.AuthPersonApp;
 using WebApIBook_2;
 
 
 namespace WebApiBook_2.ContextFolder
 {
-    public class PersonDbContext : DbContext
+    public class PersonDbContext : IdentityDbContext<User>
     {
-        public PersonDbContext() : base("ApiDBPerson") { }
+        public PersonDbContext(DbContextOptions options) : base(options) { }
         public DbSet<Person> Persons { get; set; }
     }
 }
