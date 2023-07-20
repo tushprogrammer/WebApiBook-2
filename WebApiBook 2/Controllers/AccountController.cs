@@ -21,21 +21,34 @@ namespace WebApiBook_2.Controllers
             _roleManager = roleManager;
         }
 
-        [HttpGet]//api/Account/Login
-        public async Task<bool> Login([FromBody] User user)
+        [HttpPost]//api/Account/Login
+        public async Task<bool> Login([FromBody] UserModel user)
         {
-            var loginResult = await _signInManager.PasswordSignInAsync(user.UserName,
+            var listuser = _userManager.Users.ToList();
+            try
+            {
+                var loginResult = _signInManager.PasswordSignInAsync(user.LoginProp,
                     user.Password,
                     false,
-                    lockoutOnFailure: false);
-            if (loginResult.Succeeded) return true;
-            else return false;
-        }
+                    lockoutOnFailure: false).Result;
+                if (loginResult.Succeeded)
+                {
+                    return true;
+                }
+                
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return false;
+         
+        }   
 
 
-        [HttpGet] //api/Account/IsAdmin
+        [HttpGet("{username}")] //api/Account/username
         //Метод проверки у пользователя роли администратора
-        public async Task<bool> IsAdmin([FromBody] string username)
+        public async Task<bool> GetIsAdmin(string username)
         {
             var usernow = await _userManager.FindByNameAsync(username); //
             var r = await _userManager.IsInRoleAsync(usernow, "Admin");
