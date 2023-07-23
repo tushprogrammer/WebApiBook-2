@@ -20,30 +20,29 @@ namespace WebApiBook_2.Controllers
             _signInManager = signInManager;
             _roleManager = roleManager;
         }
-
-        [HttpPost]//api/Account/Login
+        [HttpPost]//api/Account/
         public async Task<bool> Login([FromBody] UserModel user)
         {
             var listuser = _userManager.Users.ToList();
             try
             {
-                var loginResult = _signInManager.PasswordSignInAsync(user.LoginProp,
+                var loginResult = await _signInManager.PasswordSignInAsync(user.LoginProp,
                     user.Password,
                     false,
-                    lockoutOnFailure: false).Result;
+                    lockoutOnFailure: false);
                 if (loginResult.Succeeded)
                 {
                     return true;
                 }
-                
+
             }
             catch (Exception)
             {
                 throw;
             }
             return false;
-         
-        }   
+
+        }
 
 
         [HttpGet("{username}")] //api/Account/username
@@ -53,6 +52,23 @@ namespace WebApiBook_2.Controllers
             var usernow = await _userManager.FindByNameAsync(username); //
             var r = await _userManager.IsInRoleAsync(usernow, "Admin");
             return r;
+        }
+
+        [Route("api/[Controller]/1")]
+        [HttpPost]
+        public async Task<bool> RegisterAsync([FromBody] UserRegistration model)
+        {
+            var user = new User { UserName = model.LoginProp };
+            var createResult = await _userManager.CreateAsync(user, model.Password);
+            if (createResult.Succeeded)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            
         }
     }
 }
