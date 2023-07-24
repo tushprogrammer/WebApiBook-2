@@ -20,6 +20,7 @@ namespace WebApiBook_2.Controllers
             _signInManager = signInManager;
             _roleManager = roleManager;
         }
+        [Route("Login")]
         [HttpPost]//api/Account/
         public async Task<bool> Login([FromBody] UserModel user)
         {
@@ -54,9 +55,9 @@ namespace WebApiBook_2.Controllers
             return r;
         }
 
-        [Route("api/[Controller]/1")]
+        [Route("Register")]
         [HttpPost]
-        public async Task<bool> RegisterAsync([FromBody] UserRegistration model)
+        public async Task<bool> Register([FromBody] UserRegistration model)
         {
             var user = new User { UserName = model.LoginProp };
             var createResult = await _userManager.CreateAsync(user, model.Password);
